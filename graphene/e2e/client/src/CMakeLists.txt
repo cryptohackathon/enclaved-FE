@@ -21,6 +21,6 @@ include_directories(
 link_directories( ${CURL_LIBRARIES} )
 
 
-add_executable(${APP_NAME} main.cpp)
+add_executable(${APP_NAME} main.cpp EncryptorClient.cpp)
 target_link_libraries(${APP_NAME} ${DEFAULT_LIBRARIES}
 )

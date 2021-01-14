@@ -1,4 +1,5 @@
 cifer_app
+fe_sgx_demo_client
 
 pal_loader
 *.manifest
@@ -7,6 +8,10 @@ pal_loader
 *.token
 
 .vscode/*
+
+temp.txt
+
+build/
 
 # Prerequisites
 *.d

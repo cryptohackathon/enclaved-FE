@@ -1,24 +1,31 @@
 #ifndef ENCRYPTOR_CLIENT
 #define ENCRYPTOR_CLIENT
 
+#include <cstdint>
+#include <string>
+
+#include <gmp.h>
 extern "C" {
-#include "cifer/innerprod/fullysec/damgard.h"
+#include "cifer/innerprod/simple/ddh.h"
 }
+
+using namespace std;
 
 class EncryptorClient
 {
 private:
-    size_t _encryptionVectorLen; // dimension of encryption vector
+    string _clientId;
+    size_t _dataVectorLength; // dimension of encryption vector
     mpz_t _bound; // bound of the input values set to 2^10
     size_t _modulusLen; // dimension of encryption vector
-    cfe_damgard _scheme;
+    cfe_ddh _scheme;
     cfe_vec _masterPublicKey;
 
 public:
-    EncryptorClient(size_t encryptionVectorLen = 5,
-                                        size_t modulusLen = 2048);
+    EncryptorClient(const string& clientId, size_t dataVectorLength,
+                                        size_t modulusLen, int32_t bound);
     ~EncryptorClient();
-    void setPublicKey(void *data);
+    void setPublicKey(const string& publicKey);
     void encryptData();
 };
 
