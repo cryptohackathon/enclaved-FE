@@ -6,15 +6,22 @@ This project aims to enable applications using Fentec **Functional Encryption** 
 - [Enclaved-FE : Run Functional Encryption in Intel SGX](#enclaved-fe--run-functional-encryption-in-intel-sgx)
   - [Running CiFEr in Graphene-SGX](#running-cifer-in-graphene-sgx)
     - [Prerequisite](#prerequisite)
-    - [1. Example Application From CiFEr Poject](#1-example-application-from-cifer-poject)
+    - [1. simple_app From CiFEr Poject](#1-simple_app-from-cifer-poject)
       - [Building for Linux](#building-for-linux)
       - [Building for SGX](#building-for-sgx)
       - [Run Application](#run-application)
-    - [2. End-To-End Application](#2-end-to-end-application)
+    - [2. pp_analytics_app End-To-End Application](#2-pp_analytics_app-end-to-end-application)
 <!-- tocstop -->
 
 ## Running CiFEr in Graphene-SGX
-[graphene directory](graphene) includes the Makefile and a template for generating the manifest. There are two applications one simple and one end-to-end, both are tested on Ubuntu 20.04, with both normal Linux and SGX platforms.
+
+There are two applications:
+
+- [simple_app](simple_app) doesn't have any source code, it only contains Makefile script which downloads CiFEr github repo, builds library and example applications. Directory also a template file for generating the manifest used by Graphene to run in SGX. The example application runs locally without any client-server type of communication scenario. This project can be used as starter project for more complex SGX ready application.
+
+- [pp_analytics_app](pp_analytics_app) contains source code for a client-server type of example implemented by us where multiple entities utilizing functional encryption run in SGX.
+
+Both application are tested on Ubuntu 20.04, with both normal Linux and in SGX hardware mode container.
 
 ### Prerequisite
 - Follow [Graphene Document](https://graphene.readthedocs.io/en/latest/quickstart.html) to install Graphene and Intel SDK and tools.
@@ -25,12 +32,11 @@ This project aims to enable applications using Fentec **Functional Encryption** 
     sudo apt install -y build-essential libgmp-dev libsodium-dev
     ```
 
-### 1. Example Application From CiFEr Poject
-[graphene/simple](graphene/simple) downloads code from official CiFEr github repository and builds *libcifer* and the example application in CiFEr project.
+### 1. [simple_app](simple_app) From CiFEr Poject
 
-Clone this repo and go to *graphene/simple* directory
+Clone this repo and go to *[simple_app](simple_app)* directory
   ```
-  cd graphene/simple
+  cd simple_app
   ```
 
 #### Building for Linux
@@ -52,11 +58,5 @@ With SGX:
   ```
   SGX=1 ./pal_loader ./cifer_app
   ```
-### 2. End-To-End Application
-[graphene/e2e](graphene/e2e) contains source code for a more real world example implemented by us. For this we also need to install *libcifer* in */usr/local* path. Follow official [CiFEr documentation](https://github.com/fentec-project/CiFEr) for installation steps for *libcifer*.
-
-Clone this repo and go to *graphene/e2e* directory
-  ```
-  cd graphene/e2e
-  ```
-
+### 2. [pp_analytics_app](pp_analytics_app) End-To-End Application
+Please check [READEME](pp_analytics_app/README.md) for build and run instructions.
