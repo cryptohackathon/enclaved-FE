@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include <gmp.h>
 extern "C" {
@@ -11,22 +12,21 @@ extern "C" {
 
 using namespace std;
 
-class EncryptorClient
-{
+class EncryptorClient {
 private:
-    string _clientId;
-    size_t _dataVectorLength; // dimension of encryption vector
-    mpz_t _bound; // bound of the input values set to 2^10
-    size_t _modulusLen; // dimension of encryption vector
-    cfe_ddh _scheme;
-    cfe_vec _masterPublicKey;
+  int64_t _clientId;
+  size_t _dataVectorLength; // dimension of encryption vector
+  mpz_t _bound;             // bound of the input values set to 2^10
+  size_t _modulusLen;       // dimension of encryption vector
+  cfe_ddh _scheme;
+  cfe_vec _masterPublicKey;
 
 public:
-    EncryptorClient(const string& clientId, size_t dataVectorLength,
-                                        size_t modulusLen, int32_t bound);
-    ~EncryptorClient();
-    void setPublicKey(const string& publicKey);
-    void encryptData();
+  EncryptorClient(int64_t clientId, size_t dataVectorLength, size_t modulusLen,
+                  int32_t bound);
+  ~EncryptorClient();
+  void setPublicKey(const vector<string> &publicKey);
+  vector<string> encryptData(void *data);
 };
 
 #endif
