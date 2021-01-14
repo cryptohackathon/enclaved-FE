@@ -6,25 +6,32 @@ This project aims to enable applications using Fentec **Functional Encryption** 
 - [Enclaved-FE : Run Functional Encryption in Intel SGX](#enclaved-fe--run-functional-encryption-in-intel-sgx)
   - [Running CiFEr in Graphene-SGX](#running-cifer-in-graphene-sgx)
     - [Prerequisite](#prerequisite)
-    - [Build Example Application](#build-example-application)
+    - [1. Example Application From CiFEr Poject](#1-example-application-from-cifer-poject)
       - [Building for Linux](#building-for-linux)
       - [Building for SGX](#building-for-sgx)
-    - [Run Example Application](#run-example-application)
+      - [Run Application](#run-application)
+    - [2. End-To-End Application](#2-end-to-end-application)
 <!-- tocstop -->
 
 ## Running CiFEr in Graphene-SGX
-[graphene directory](graphene) includes the Makefile and a template for generating the manifest. The application is tested on Ubuntu 20.04, with both normal Linux and SGX platforms.
+[graphene directory](graphene) includes the Makefile and a template for generating the manifest. There are two applications one simple and one end-to-end, both are tested on Ubuntu 20.04, with both normal Linux and SGX platforms.
 
 ### Prerequisite
 - Follow [Graphene Document](https://graphene.readthedocs.io/en/latest/quickstart.html) to install Graphene and Intel SDK and tools.
-- Also make sure [graphene-sx-helloworld](https://graphene.readthedocs.io/en/latest/quickstart.html#quick-start-with-sgx-support) works on your machine.
+- Also make sure [graphene-sgx-helloworld](https://graphene.readthedocs.io/en/latest/quickstart.html#quick-start-with-sgx-support) works on your machine.
 
 - Install CiFEr dependencies:
     ```sh
     sudo apt install -y build-essential libgmp-dev libsodium-dev
     ```
 
-### Build Example Application
+### 1. Example Application From CiFEr Poject
+[Code in graphene/simple](graphene/simple) downloads code from official CiFEr github repository and builds *libcifer* and the example application in CiFEr project.
+
+Clone this repo and go to *graphene/simple* directory
+  ```
+  cd graphene/simple
+  ```
 
 #### Building for Linux
 
@@ -34,7 +41,7 @@ Run `GRAPHENE_DIR=<graphene-root-dir> make` (non-debug) or `GRAPHENE_DIR=<graphe
 
 Run `GRAPHENE_DIR=<graphene-root-dir> make SGX=1` (non-debug) or `GRAPHENE_DIR=<graphene-root-dir> make SGX=1 DEBUG=1` (debug) in the directory.
 
-### Run Example Application
+#### Run Application
 
 Without SGX:
   ```
@@ -45,3 +52,11 @@ With SGX:
   ```
   SGX=1 ./pal_loader ./cifer_app
   ```
+### 2. End-To-End Application
+[Code in graphene/e2e](graphene/e2e) contains source code for a more real world example implemented by us. For this we also need to install *libcifer* in */usr/local* path. Follow official [CiFEr documentation](https://github.com/fentec-project/CiFEr) for installation steps for *libcifer*.
+
+Clone this repo and go to *graphene/e2e* directory
+  ```
+  cd graphene/e2e
+  ```
+

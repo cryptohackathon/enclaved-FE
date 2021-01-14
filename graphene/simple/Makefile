@@ -54,7 +54,7 @@ $(CIFER_LIB_SRC_DIR)/cifer_lib_build: $(CIFER_LIB_SRC_DIR)/git_download
 	sudo $(MAKE) -C $(CIFER_LIB_SRC_DIR)/build install
 
 
-# create a symbolic link in current directory
+# build application
 cifer_app: $(CIFER_LIB_SRC_DIR)/cifer_lib_build
 	$(CC) $(CIFER_LIB_SRC_DIR)/example/example.c -o cifer_app -lgmp -lcifer
 

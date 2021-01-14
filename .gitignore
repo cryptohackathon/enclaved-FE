@@ -1,3 +1,10 @@
+cifer_app
+
+pal_loader
+*.manifest
+*.sgx 
+*.sig
+*.token
 
 .vscode/*
 
