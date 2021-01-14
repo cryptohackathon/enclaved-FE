@@ -1,0 +1,94 @@
+# Fentec-Cifer manifest example
+#
+# This manifest was prepared and tested on Ubuntu 20.04.
+
+loader.argv0_override = "fe_sgx_demo_client"
+
+# Graphene environment, including the path to the library OS and the debug
+# option (inline/none).
+loader.preload = "file:$(GRAPHENE_DIR)/Runtime/libsysdb.so"
+loader.debug_type = "$(GRAPHENE_DEBUG)"
+
+# Environment variables
+loader.env.LD_LIBRARY_PATH = "/lib:$(ARCH_LIBDIR):/usr/$(ARCH_LIBDIR):/usr/local/lib"
+
+# Mounted FSes. The following "chroot" FSes mount a part of the host FS into the
+# guest. Other parts of the host FS will not be available in the guest.
+
+# Default glibc files, mounted from the Runtime directory in GRAPHENE_DIR.
+fs.mount.lib.type = "chroot"
+fs.mount.lib.path = "/lib"
+fs.mount.lib.uri = "file:$(GRAPHENE_DIR)/Runtime"
+
+# Host-level libraries (e.g., /lib/x86_64-linux-gnu) required by Cifer.
+fs.mount.lib2.type = "chroot"
+fs.mount.lib2.path = "$(ARCH_LIBDIR)"
+fs.mount.lib2.uri = "file:$(ARCH_LIBDIR)"
+
+# More host-level libraries (e.g., /usr/lib/x86_64-linux-gnu) required by Cifer.
+fs.mount.lib3.type = "chroot"
+fs.mount.lib3.path = "/usr/$(ARCH_LIBDIR)"
+fs.mount.lib3.uri = "file:/usr/$(ARCH_LIBDIR)"
+
+# Host-level libraries from /usr/local/lib required by app (e.g., for libcifer)
+fs.mount.lib4.type = "chroot"
+fs.mount.lib4.path = "/usr/local/lib"
+fs.mount.lib4.uri = "file:/usr/local/lib"
+
+# Host-level directory to NSS files required by Glibc + NSS libs.
+fs.mount.etc.type = "chroot"
+fs.mount.etc.path = "/etc"
+fs.mount.etc.uri = "file:/etc"
+
+# SGX general options
+
+# Set the virtual memory size of the SGX enclave. For SGX v1, the enclave
+# size must be specified during signing. If Nginx needs more virtual memory
+# than the enclave size, Graphene will not be able to allocate it.
+sgx.enclave_size = "2G"
+
+# Set the maximum number of enclave threads. For SGX v1, the number of enclave
+# TCSes must be specified during signing, so the application cannot use more
+# threads than the number of TCSes. Note that Graphene also creates an internal
+# thread for handling inter-process communication (IPC), and potentially another
+# thread for asynchronous events. Therefore, the actual number of threads that
+# the application can create is (sgx.thread_num - 2).
+#
+# We (somewhat arbitrarily) specify 4 threads since Nginx is single-threaded.
+sgx.thread_num = 8
+
+# SGX trusted libraries
+
+# Glibc libraries
+sgx.trusted_files.ld = "file:$(GRAPHENE_DIR)/Runtime/ld-linux-x86-64.so.2"
+sgx.trusted_files.libc = "file:$(GRAPHENE_DIR)/Runtime/libc.so.6"
+sgx.trusted_files.libm = "file:$(GRAPHENE_DIR)/Runtime/libm.so.6"
+sgx.trusted_files.libdl = "file:$(GRAPHENE_DIR)/Runtime/libdl.so.2"
+sgx.trusted_files.librt = "file:$(GRAPHENE_DIR)/Runtime/librt.so.1"
+sgx.trusted_files.libutil = "file:$(GRAPHENE_DIR)/Runtime/libutil.so.1"
+sgx.trusted_files.libpthread = "file:$(GRAPHENE_DIR)/Runtime/libpthread.so.0"
+sgx.trusted_files.libresolv = "file:$(GRAPHENE_DIR)/Runtime/libresolv.so.2"
+sgx.trusted_files.libnssdns = "file:$(GRAPHENE_DIR)/Runtime/libnss_dns.so.2"
+
+# Name Service Switch (NSS) libraries (Glibc dependencies)
+sgx.trusted_files.libnss_mdns4_minimal = "file:$(ARCH_LIBDIR)/libnss_mdns4_minimal.so.2"
+sgx.trusted_files.libnsscompat = "file:$(ARCH_LIBDIR)/libnss_compat.so.2"
+sgx.trusted_files.libnssfiles = "file:$(ARCH_LIBDIR)/libnss_files.so.2"
+sgx.trusted_files.libnssnis = "file:$(ARCH_LIBDIR)/libnss_nis.so.2"
+
+# libNSL is a dependency of libnss_compat above
+sgx.trusted_files.libnsl = "file:$(ARCH_LIBDIR)/libnsl.so.1"
+
+# Application dependencies (shared libraries)
+$(FE_SGX_DEMO_CLIENT_TRUSTED_LIBS)
+
+# Name Service Switch (NSS) files. Glibc reads these files as part of name-
+# service information gathering. For more info, see 'man nsswitch.conf'.
+sgx.allowed_files.nsswitch = "file:/etc/nsswitch.conf"
+sgx.allowed_files.hostconf = "file:/etc/host.conf"
+sgx.allowed_files.resolvconf = "file:/etc/resolv.conf"
+sgx.allowed_files.ethers = "file:/etc/ethers"
+sgx.allowed_files.hosts = "file:/etc/hosts"
+sgx.allowed_files.group = "file:/etc/group"
+sgx.allowed_files.passwd = "file:/etc/passwd"
+sgx.allowed_files.gaiconf = "file:/etc/gai.conf"

@@ -26,7 +26,7 @@ This project aims to enable applications using Fentec **Functional Encryption** 
     ```
 
 ### 1. Example Application From CiFEr Poject
-[Code in graphene/simple](graphene/simple) downloads code from official CiFEr github repository and builds *libcifer* and the example application in CiFEr project.
+[graphene/simple](graphene/simple) downloads code from official CiFEr github repository and builds *libcifer* and the example application in CiFEr project.
 
 Clone this repo and go to *graphene/simple* directory
   ```
@@ -53,7 +53,7 @@ With SGX:
   SGX=1 ./pal_loader ./cifer_app
   ```
 ### 2. End-To-End Application
-[Code in graphene/e2e](graphene/e2e) contains source code for a more real world example implemented by us. For this we also need to install *libcifer* in */usr/local* path. Follow official [CiFEr documentation](https://github.com/fentec-project/CiFEr) for installation steps for *libcifer*.
+[graphene/e2e](graphene/e2e) contains source code for a more real world example implemented by us. For this we also need to install *libcifer* in */usr/local* path. Follow official [CiFEr documentation](https://github.com/fentec-project/CiFEr) for installation steps for *libcifer*.
 
 Clone this repo and go to *graphene/e2e* directory
   ```
