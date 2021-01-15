@@ -43,11 +43,12 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func processData(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: Process Data")
 	decoder := json.NewDecoder(r.Body)
-	var data dataRequest
-	decoder.Decode(&data)
+	var reqData dataRequest
+	decoder.Decode(&reqData)
+	fmt.Println("Data received from client: ", reqData)
 
 	var keyReq fetchKeyRequest
-	keyReq.ClientID = data.ClientID
+	keyReq.ClientID = reqData.ClientID
 	jsonReq, _ := json.Marshal(keyReq)
 
 	keyRes, err := http.Post("http://localhost:10000/fetchKey", "application/json; charset=utf-8", bytes.NewBuffer(jsonReq))
@@ -59,17 +60,18 @@ func processData(w http.ResponseWriter, r *http.Request) {
 	var keys fetchKeyResponse
 	keyDecoder.Decode(&keys)
 
-	fmt.Println("Received keys: ", keys.Y, keys.FeKey, keys.Params.L, keys.Params.Bound)
+	fmt.Println("Keys received from TrustedEntity: ", keys.Y, keys.FeKey, keys.Params.Bound, keys.Params.L, keys.Params.ModulusLength)
 
 	dec, _ := simple.NewDDHPrecomp(keys.Params.L, keys.Params.ModulusLength, big.NewInt(int64(keys.Params.Bound)))
 	// decrypt to obtain the result: inner prod of x and y
 	// we expect xy to be 11 (e.g. <[1,2],[3,4]>)
-	var cipher = []*big.Int{}
-	for _, elem := range data.Ciphertext {
+	var cipher []*big.Int
+	for _, elem := range reqData.Ciphertext {
 		val := new(big.Int)
 		val.SetString(elem, 10) //sets elem as decimal (10) big.Int
 		cipher = append(cipher, val)
 	}
+	fmt.Println("Ciphertext after conversion to data.Vector: ", cipher)
 	xy, _ := dec.Decrypt(cipher, keys.FeKey, keys.Y)
 
 	fmt.Println("Decypted data: ", xy)
