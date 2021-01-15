@@ -13,18 +13,24 @@ import (
 	"github.com/fentec-project/gofe/innerprod/simple"
 )
 
+type ddhParams struct {
+	L             int      `json:"L"`
+	ModulusLength int      `json:"modulusLength"`
+	Bound         []string `json:"Bound"`
+}
+
 type keyStruct struct {
-	ClientID int               `json:"ClientID"`
-	Mpk      []string          `json:"mpk"`
-	Y        data.Vector       `json:"y"`
-	FeKey    *big.Int          `json:"feKey"`
-	Params   *simple.DDHParams `json:"Params"`
+	ClientID int         `json:"ClientID"`
+	Mpk      []string    `json:"mpk"`
+	Y        data.Vector `json:"y"`
+	FeKey    *big.Int    `json:"feKey"`
+	Params   *ddhParams  `json:"Params"`
 }
 
 type keygenResponse struct {
-	ClientID int               `json:"ClientID"`
-	Mpk      []string          `json:"mpk"`
-	Params   *simple.DDHParams `json:"Params"`
+	ClientID int        `json:"ClientID"`
+	Mpk      []string   `json:"mpk"`
+	Params   *ddhParams `json:"Params"`
 }
 
 type fetchKeyRequest struct {
@@ -32,15 +38,15 @@ type fetchKeyRequest struct {
 }
 
 type fetchKeyResponse struct {
-	Y      data.Vector       `json:"y"`
-	FeKey  *big.Int          `json:"feKey"`
-	Params *simple.DDHParams `json:"Params"`
+	Y      data.Vector `json:"y"`
+	FeKey  *big.Int    `json:"feKey"`
+	Params *ddhParams  `json:"Params"`
 }
 
 var keyList = map[int]keyStruct{}
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the HomePage!")
+	fmt.Fprintf(w, "Welcome to the HomePage of the TrustedEntity!")
 	log.Println("Endpoint Hit: homePage")
 }
 
@@ -62,7 +68,10 @@ func generateKeys(w http.ResponseWriter, r *http.Request) {
 
 	key.Y = data.NewVector([]*big.Int{big.NewInt(1), big.NewInt(2)})
 	key.FeKey, _ = trustedEnt.DeriveKey(msk, key.Y)
-	key.Params = trustedEnt.Params
+	key.Params = new(ddhParams)
+	key.Params.L = trustedEnt.Params.L
+	key.Params.Bound = strings.Fields(trustedEnt.Params.Bound.String())
+	key.Params.ModulusLength = modulusLength
 
 	keyList[key.ClientID] = key
 
