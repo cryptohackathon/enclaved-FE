@@ -23,7 +23,7 @@ private:
 
 public:
   EncryptorClient(int64_t clientId, size_t dataVectorLength, size_t modulusLen,
-                  int32_t bound);
+                  const string &bound);
   ~EncryptorClient();
   void setPublicKey(const vector<string> &publicKey);
   vector<string> encryptData(void *data);

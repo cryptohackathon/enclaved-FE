@@ -12,13 +12,15 @@ extern "C" {
 using namespace std;
 
 EncryptorClient::EncryptorClient(int64_t clientId, size_t dataVectorLength,
-                                 size_t modulusLen, int32_t bound) {
+                                 size_t modulusLen, const string &bound) {
   _clientId = clientId;
   // first choose meta-parameters for the scheme
   _dataVectorLength = dataVectorLength;
   mpz_init(_bound);
-  mpz_set_ui(_bound, 2);
-  mpz_pow_ui(_bound, _bound, bound);
+  /*   mpz_set_ui(_bound, 2);
+    mpz_pow_ui(_bound, _bound, bound); */
+  mpz_set_str(_bound, bound.c_str(), 10);
+
   _modulusLen = modulusLen;
 
   // initiate the scheme
@@ -43,7 +45,7 @@ void EncryptorClient::setPublicKey(const vector<string> &publicKey) {
 
 vector<string> EncryptorClient::encryptData(void *data) {
   vector<string> encryptedData;
-  mpz_t bound_neg;
+  // mpz_t bound_neg;
   cfe_ddh encryptor;
 
   // Generate and encrypt some dummy data
@@ -51,10 +53,11 @@ vector<string> EncryptorClient::encryptData(void *data) {
   // we sample a uniformly random vector x
   cfe_vec x;
 
-  mpz_init(bound_neg);
-  mpz_neg(bound_neg, _bound);
+  // mpz_init(bound_neg);
+  // mpz_neg(bound_neg, _bound);
   cfe_vec_init(&x, _dataVectorLength);
-  cfe_uniform_sample_range_vec(&x, bound_neg, _bound);
+  // cfe_uniform_sample_range_vec(&x, bound_neg, _bound);
+  cfe_uniform_sample_vec(&x, _bound);
 
   LFLOG_INFO << "plain text data(x):";
   for (size_t i = 0; i < x.size; i++) {
@@ -73,7 +76,7 @@ vector<string> EncryptorClient::encryptData(void *data) {
   for (size_t i = 0; i < ciphertext.size; i++) {
     encryptedData.push_back(mpz_get_str(NULL, 0, ciphertext.vec[i]));
   }
-  mpz_clear(bound_neg);
+  // mpz_clear(bound_neg);
   cfe_ddh_free(&encryptor);
   return encryptedData;
 }
