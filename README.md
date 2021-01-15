@@ -59,4 +59,4 @@ With SGX:
   SGX=1 ./pal_loader ./cifer_app
   ```
 ### 2. [pp_analytics_app](pp_analytics_app) End-To-End Application
-Please check [READEME](pp_analytics_app/README.md) for build and run instructions.
+Please check [README](pp_analytics_app/README.md) for build and run instructions.
