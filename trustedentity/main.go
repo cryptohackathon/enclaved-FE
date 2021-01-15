@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"math/rand"
 	"net/http"
+	"strings"
 
 	"github.com/fentec-project/gofe/data"
 	"github.com/fentec-project/gofe/innerprod/simple"
@@ -14,7 +15,7 @@ import (
 
 type keyStruct struct {
 	ClientID int               `json:"ClientID"`
-	Mpk      data.Vector       `json:"mpk"`
+	Mpk      []string          `json:"mpk"`
 	Y        data.Vector       `json:"y"`
 	FeKey    *big.Int          `json:"feKey"`
 	Params   *simple.DDHParams `json:"Params"`
@@ -22,7 +23,7 @@ type keyStruct struct {
 
 type keygenResponse struct {
 	ClientID int               `json:"ClientID"`
-	Mpk      data.Vector       `json:"mpk"`
+	Mpk      []string          `json:"mpk"`
 	Params   *simple.DDHParams `json:"Params"`
 }
 
@@ -56,7 +57,9 @@ func generateKeys(w http.ResponseWriter, r *http.Request) {
 	modulusLength := 2048
 	trustedEnt, _ := simple.NewDDHPrecomp(len, modulusLength, bound)
 
-	msk, key.Mpk, _ = trustedEnt.GenerateMasterKeys()
+	msk, mpk, _ := trustedEnt.GenerateMasterKeys()
+	key.Mpk = strings.Fields(mpk.String())
+
 	key.Y = data.NewVector([]*big.Int{big.NewInt(1), big.NewInt(2)})
 	key.FeKey, _ = trustedEnt.DeriveKey(msk, key.Y)
 	key.Params = trustedEnt.Params
