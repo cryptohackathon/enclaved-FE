@@ -13,9 +13,9 @@ import (
 )
 
 type ddhParams struct {
-	L             int `json:"L"`
-	ModulusLength int `json:"modulusLength"`
-	Bound         int `json:"Bound"`
+	L             int    `json:"L"`
+	ModulusLength int    `json:"modulusLength"`
+	Bound         string `json:"Bound"`
 }
 
 type dataRequest struct {
@@ -62,7 +62,9 @@ func processData(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Keys received from TrustedEntity: ", keys.Y, keys.FeKey, keys.Params.Bound, keys.Params.L, keys.Params.ModulusLength)
 
-	dec, _ := simple.NewDDHPrecomp(keys.Params.L, keys.Params.ModulusLength, big.NewInt(int64(keys.Params.Bound)))
+	bound := new(big.Int)
+	bound.SetString(keys.Params.Bound, 10)
+	dec, _ := simple.NewDDHPrecomp(keys.Params.L, keys.Params.ModulusLength, bound)
 	// decrypt to obtain the result: inner prod of x and y
 	// we expect xy to be 11 (e.g. <[1,2],[3,4]>)
 	var cipher []*big.Int

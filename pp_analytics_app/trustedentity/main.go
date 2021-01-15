@@ -14,9 +14,9 @@ import (
 )
 
 type ddhParams struct {
-	L             int `json:"L"`
-	ModulusLength int `json:"modulusLength"`
-	Bound         int `json:"Bound"`
+	L             int    `json:"L"`
+	ModulusLength int    `json:"modulusLength"`
+	Bound         string `json:"Bound"`
 }
 
 type keyStruct struct {
@@ -59,9 +59,9 @@ func generateKeys(w http.ResponseWriter, r *http.Request) {
 	key.ClientID = rand.Int()
 
 	len := 2
-	bound := 10
+	bound := new(big.Int).Exp(big.NewInt(2), big.NewInt(10), nil)
 	modulusLength := 2048
-	trustedEnt, _ := simple.NewDDHPrecomp(len, modulusLength, big.NewInt(int64(bound)))
+	trustedEnt, _ := simple.NewDDHPrecomp(len, modulusLength, bound)
 
 	msk, mpk, _ := trustedEnt.GenerateMasterKeys()
 	key.Mpk = strings.Fields(mpk.String())
@@ -70,7 +70,7 @@ func generateKeys(w http.ResponseWriter, r *http.Request) {
 	key.FeKey, _ = trustedEnt.DeriveKey(msk, key.Y)
 	key.Params = new(ddhParams)
 	key.Params.L = trustedEnt.Params.L
-	key.Params.Bound = bound
+	key.Params.Bound = bound.String()
 	key.Params.ModulusLength = modulusLength
 
 	keyList[key.ClientID] = key
