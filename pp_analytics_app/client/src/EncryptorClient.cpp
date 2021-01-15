@@ -5,6 +5,8 @@ extern "C" {
 #include "cifer/sample/uniform.h"
 }
 
+#include "logfault/logfault.h"
+
 #include "EncryptorClient.hpp"
 
 using namespace std;
@@ -53,6 +55,11 @@ vector<string> EncryptorClient::encryptData(void *data) {
   mpz_neg(bound_neg, _bound);
   cfe_vec_init(&x, _dataVectorLength);
   cfe_uniform_sample_range_vec(&x, bound_neg, _bound);
+
+  LFLOG_INFO << "plain text data(x):";
+  for (size_t i = 0; i < x.size; i++) {
+    LFLOG_INFO << "x[" << i << "]: " << mpz_get_str(NULL, 0, x.vec[i]);
+  }
 
   // encrypt the the vector x
   cfe_vec ciphertext;
