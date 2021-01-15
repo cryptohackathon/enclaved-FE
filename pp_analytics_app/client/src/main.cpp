@@ -25,7 +25,7 @@ int getFEPublicParamsFromTrustedServer() {
   restincurl::Client client;
 
   client.Build()
-      ->Get("http://localhost:3000/generateKeys")
+      ->Get("http://localhost:10000/generateKeys")
 
       // Tell the server that we accept Json payloads
       .AcceptJson()
@@ -42,6 +42,7 @@ int getFEPublicParamsFromTrustedServer() {
             // auto params = j["Params"];
             dataVectorLength = j["Params"]["L"].get<int>();
             bound = j["Params"]["Bound"].get<int>();
+            modulusLength = j["Params"]["modulusLength"];
             auto mpk = j["mpk"];
             for (json::iterator it = mpk.begin(); it != mpk.end(); ++it) {
               publicKey.push_back(*it);
@@ -77,7 +78,7 @@ int postEncryptedDataToAnalyticsServer(const vector<string> &encryptdData) {
   j["encData"] = encryptdData;
 
   client.Build()
-      ->Post("http://localhost:3000/data")
+      ->Post("http://localhost:10008/data")
 
       // Tell the server that we accept Json payloads
       .AcceptJson()
@@ -95,11 +96,7 @@ int postEncryptedDataToAnalyticsServer(const vector<string> &encryptdData) {
           try {
 
             // Parse the response body we got as Json.
-            const auto j = json::parse(result.body);
-
-            // We expect to get an id for the object we just sent
-            // LFLOG_DEBUG << "The object was assigned id " <<
-            // j["id"].get<int>();
+            // const auto j = json::parse(result.body);
 
           } catch (const std::exception &ex) {
             LFLOG_ERROR << "Caught exception: " << ex.what();
@@ -135,7 +132,6 @@ int main(int argc, char *argv[]) {
   }
 
   // init encryptor client
-  modulusLength = 2048;
   EncryptorClient encryptor(clientId, dataVectorLength, modulusLength, bound);
   // set pub key
   encryptor.setPublicKey(publicKey);
@@ -152,7 +148,7 @@ int main(int argc, char *argv[]) {
   // post encrypted data to analytics engine
   if (postEncryptedDataToAnalyticsServer(encryptedData)) {
     LFLOG_ERROR << "posting encrypted data \
-              to analytics engined failed"
+                to analytics engined failed"
                 << endl;
     exit(EXIT_FAILURE);
   }
