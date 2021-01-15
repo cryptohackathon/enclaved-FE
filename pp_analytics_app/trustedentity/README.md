@@ -17,7 +17,7 @@ The server is implemented in a single golang file, main.go!
 ## Build & Execution
 Running a server doesn't get simpler than this. Simply do,
 ```
-go run master.go
+go run main.go
 ```
 ## Validating the server
 Hit the /generateKeys API using a HTTP GET request on Postman as shown below:

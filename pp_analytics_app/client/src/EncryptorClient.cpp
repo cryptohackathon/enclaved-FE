@@ -17,8 +17,6 @@ EncryptorClient::EncryptorClient(int64_t clientId, size_t dataVectorLength,
   // first choose meta-parameters for the scheme
   _dataVectorLength = dataVectorLength;
   mpz_init(_bound);
-  /*   mpz_set_ui(_bound, 2);
-    mpz_pow_ui(_bound, _bound, bound); */
   mpz_set_str(_bound, bound.c_str(), 10);
 
   _modulusLen = modulusLen;
@@ -39,13 +37,12 @@ EncryptorClient::~EncryptorClient() {
 void EncryptorClient::setPublicKey(const vector<string> &publicKey) {
   assert(publicKey.size() == _dataVectorLength);
   for (size_t i = 0; i < _dataVectorLength; i++) {
-    mpz_set_str(_masterPublicKey.vec[i], publicKey[0].c_str(), 10);
+    mpz_set_str(_masterPublicKey.vec[i], publicKey[i].c_str(), 10);
   }
 }
 
 vector<string> EncryptorClient::encryptData(void *data) {
   vector<string> encryptedData;
-  // mpz_t bound_neg;
   cfe_ddh encryptor;
 
   // Generate and encrypt some dummy data
@@ -53,16 +50,16 @@ vector<string> EncryptorClient::encryptData(void *data) {
   // we sample a uniformly random vector x
   cfe_vec x;
 
-  // mpz_init(bound_neg);
-  // mpz_neg(bound_neg, _bound);
   cfe_vec_init(&x, _dataVectorLength);
-  // cfe_uniform_sample_range_vec(&x, bound_neg, _bound);
   cfe_uniform_sample_vec(&x, _bound);
 
-  LFLOG_INFO << "plain text data(x):";
-  for (size_t i = 0; i < x.size; i++) {
-    LFLOG_INFO << "x[" << i << "]: " << mpz_get_str(NULL, 0, x.vec[i]);
-  }
+  /*   LFLOG_INFO << "plain text data(x):";
+    for (size_t i = 0; i < x.size; i++) {
+      LFLOG_INFO << "x[" << i << "]: " << mpz_get_str(NULL, 10, x.vec[i]);
+    } */
+  LFLOG_INFO << "plain text data data" << endl;
+  cfe_vec_print(&x);
+  LFLOG_INFO << endl;
 
   // encrypt the the vector x
   cfe_vec ciphertext;
@@ -74,9 +71,9 @@ vector<string> EncryptorClient::encryptData(void *data) {
   assert(err == 0);
 
   for (size_t i = 0; i < ciphertext.size; i++) {
-    encryptedData.push_back(mpz_get_str(NULL, 0, ciphertext.vec[i]));
+    encryptedData.push_back(mpz_get_str(NULL, 10, ciphertext.vec[i]));
   }
-  // mpz_clear(bound_neg);
+
   cfe_ddh_free(&encryptor);
   return encryptedData;
 }
