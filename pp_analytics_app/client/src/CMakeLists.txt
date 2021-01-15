@@ -12,6 +12,8 @@ find_package(CURL REQUIRED)
 
 message(STATUS "Curl library: ${CURL_LIBRARIES}")
 
+set(CIFER_INSTALL_LIB "/usr/local/lib")
+
 set(DEFAULT_LIBRARIES ${CURL_LIBRARIES} pthread cifer gmp)
 include_directories(
     ${CURL_INCLUDE_DIRS}
@@ -19,6 +21,7 @@ include_directories(
     )
 
 link_directories( ${CURL_LIBRARIES} )
+link_directories(${CIFER_INSTALL_LIB})
 
 
 add_executable(${APP_NAME} main.cpp EncryptorClient.cpp)
