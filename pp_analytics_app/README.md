@@ -26,19 +26,19 @@ Our goal is to run application using Fentec-libraries in Intel SGX enclave.
 
 ## Build and Run data owner Client
 
-Clone this repo and go to *[simple_app](simple_app)* directory
+Clone this repo and go to *[pp_analytics_app](pp_analytics_app)* directory
   ```sh
   cd client
   ```
 
 
 #### Building for SGX
-Install libcifer followings steps [here](https://github.com/fentec-project/CiFEr).
-Install libcurl-dev
+- Install libcifer followings steps [here](https://github.com/fentec-project/CiFEr).
+- Install libcurl-dev
     ```sh
     sudo apt-get install libcurl4-openssl-dev
     ```
-Run `GRAPHENE_DIR=<graphene-root-dir> make SGX=1` (non-debug) or `GRAPHENE_DIR=<graphene-root-dir> make SGX=1 DEBUG=1` (debug) in the directory.
+- Run `GRAPHENE_DIR=<graphene-root-dir> make SGX=1` (non-debug) or `GRAPHENE_DIR=<graphene-root-dir> make SGX=1 DEBUG=1` (debug) in the directory.
 
 #### Run Application
 
